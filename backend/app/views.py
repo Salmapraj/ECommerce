@@ -46,3 +46,15 @@ def GetProducts(request):
   serializer_class = ProductSerializer(product, many = True)
   return Response(serializer_class.data)
 
+
+@api_view(['GET'])
+def GetProductsByCategory(request , val):
+  product = Product.objects.filter(category = val.lower())
+  serializer_class = ProductSerializer(product, many = True)
+  return Response(serializer_class.data)
+
+@api_view(['GET'])
+def GetProductsByBrand(request, val):
+  product = Product.objects.filter(brand = val.lower())
+  serializer_class = ProductSerializer(product, many = True)
+  return Response(serializer_class.data)
