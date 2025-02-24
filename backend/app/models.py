@@ -2,15 +2,14 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 # Create your models here.
 CATEGORY=(
-    ('serum','serum' ),
-    ('toner','toner' ),
-    ('exfoliator','exfoliator' ),
-    ('moisturizer','moisturizer' ),
-    ('cleanser','cleanser' ),
-    ('serum','serum' ),
-    ('eye cream','eye cream'),
-    ('lip care','lip care'),
-    ('face mask','face mask'),
+    ('serum','Serum' ),
+    ('toner','Toner' ),
+    ('exfoliator','Exfoliator' ),
+    ('moisturizer','Moisturizer' ),
+    ('cleanser','Cleanser' ),
+    ('eye cream','Eye Cream'),
+    ('lip care','Lip Care'),
+    ('face mask','Face Mask'),
 )
 
 class Product(models.Model):
