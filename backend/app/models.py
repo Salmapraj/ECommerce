@@ -10,6 +10,7 @@ CATEGORY=(
     ('eye cream','Eye Cream'),
     ('lip care','Lip Care'),
     ('face mask','Face Mask'),
+    ('spf','SPF'),
 )
 
 class Product(models.Model):

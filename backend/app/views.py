@@ -63,3 +63,28 @@ def GetProductsBySearch(request, val):
   )
   serializer = ProductSerializer(products, many = True)
   return Response(serializer.data)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def AddToCart(request):
+  user = request.user
+  product_id = request.data.get('product_id')
+  quantity = request.data.get('quantity')
+
+  try:
+    product = Product.objects.get(id = product_id)
+  except Product.DoesNotExist:
+    return Response({'error': 'Product Not Found'}, status = status.HTTP_400_BAD_REQUEST)
+  
+  cart_item, created = Cart.objects.get_or_create(user = user, product = product, quantity = quantity)
+
+  if not created: 
+    cart_item.quantity += 1
+
+  cart_item.save()
+  serializer = CartSerializer(cart_item)
+  return Response(serializer.data, status = status.HTTP_201_CREATED)
+
+  
+
