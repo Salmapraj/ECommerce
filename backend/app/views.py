@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.db.models import Q
 from .models import *
 from .serializer import *
 from rest_framework import generics, status
@@ -11,7 +12,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 class RegisterView(generics.CreateAPIView):
   queryset = User.objects.all()
   permission_classes = [AllowAny]
-  serializer_class = RegisterSerializer
+  serializer = RegisterSerializer
 
   def perform_create(self, serializer):
     user = serializer.save()
@@ -43,18 +44,22 @@ def login(request):
 @api_view(['GET'])
 def GetProducts(request):
   product = Product.objects.all()
-  serializer_class = ProductSerializer(product, many = True)
-  return Response(serializer_class.data)
+  serializer = ProductSerializer(product, many = True)
+  return Response(serializer.data)
 
 
 @api_view(['GET'])
 def GetProductsByCategory(request , val):
-  product = Product.objects.filter(category__iexact = val)
-  serializer_class = ProductSerializer(product, many = True)
-  return Response(serializer_class.data)
+  products = Product.objects.filter(category__iexact = val)
+  serializer = ProductSerializer(products, many = True)
+  return Response(serializer.data)
 
 @api_view(['GET'])
-def GetProductsByBrand(request, val):
-  product = Product.objects.filter(brand__iexact = val)
-  serializer_class = ProductSerializer(product, many = True)
-  return Response(serializer_class.data)
+def GetProductsBySearch(request, val):
+  products = Product.objects.filter(
+    Q(name__icontains = val)|
+    Q(brand__icontains = val)|
+    Q(category__icontains = val)
+  )
+  serializer = ProductSerializer(products, many = True)
+  return Response(serializer.data)

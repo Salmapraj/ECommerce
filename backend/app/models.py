@@ -35,3 +35,8 @@ class User(AbstractUser):
   REQUIRED_FIELDS =['first_name','last_name','email','phone','address']
   def __str__(self):
     return self.username
+  
+class Cart(models.Model):
+  user = models.ForeignKey(User, on_delete=models.CASCADE)
+  product = models.ForeignKey(Product, on_delete = models.CASCADE)
+  quantity = models.PositiveIntegerField(default = 1)
