@@ -86,5 +86,22 @@ def AddToCart(request):
   serializer = CartSerializer(cart_item)
   return Response(serializer.data, status = status.HTTP_201_CREATED)
 
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def ShowCart(request):
+  user = request.user
+  items = Cart.objects.filter(user = user)
+  amount = 0
+  for item in items:
+    price = item.quantity*item.product.price
+    amount += price
+  serializer = CartSerializer(items, many = True)
+  return Response({
+    "cart_items": serializer.data,
+    "total_amount": amount
+  })
+
+
   
 

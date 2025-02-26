@@ -7,4 +7,6 @@ urlpatterns=[
   path('products/search/<slug:val>',views.GetProductsBySearch, name="products-search"),
   path('login/',views.login, name ="login"),
   path('add-to-cart/',views.AddToCart, name = "add-to-cart"),
+  path('show-cart/',views.ShowCart, name = "show-cart"),
+
 ]
