@@ -104,11 +104,6 @@ def ShowCart(request):
     "total_amount": amount
   })
 
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated
-from rest_framework_simplejwt.tokens import RefreshToken
-from rest_framework.response import Response
-from rest_framework import status
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
@@ -127,6 +122,23 @@ def LogoutView(request):
 
 
 
-  
-  
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])  
+def PlusCart(request):
+  user = request.user
+  product_id = request.data.get('product_id')
+  product = Product.objects.get(id = product_id)
+  cart_item = Cart.objects.get(Q(user = user)& Q(product = product))
+  cart_item.quantity += 1
+  cart_item.save()
+  items = Cart.objects.filter(user = user)
+  net_amount = 0
+  for item in items:
+    amount = item.product.price * cart_item.quantity
+    net_amount += amount
+  serializer = CartSerializer(items, many = True)
+  return Response({
+    "cart_items": serializer.data,
+    "total_amount": net_amount
+  })
 

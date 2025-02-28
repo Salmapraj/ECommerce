@@ -9,5 +9,6 @@ urlpatterns=[
   path('logout/',views.LogoutView, name ="logout"),
   path('add-to-cart/',views.AddToCart, name = "add-to-cart"),
   path('show-cart/',views.ShowCart, name = "show-cart"),
+  path('plus-cart/',views.PlusCart, name = "plus-cart"),
 
 ]
