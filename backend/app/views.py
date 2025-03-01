@@ -142,3 +142,25 @@ def PlusCart(request):
     "total_amount": net_amount
   })
 
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])  
+def MinusCart(request):
+  user = request.user
+  product_id = request.data.get('product_id')
+  product = Product.objects.get(id = product_id)
+  cart_item = Cart.objects.get(Q(user = user)& Q(product = product))
+  cart_item.quantity -= 1
+  cart_item.save()
+  items = Cart.objects.filter(user = user)
+  net_amount = 0
+  for item in items:
+    amount = item.product.price * cart_item.quantity
+    net_amount += amount
+  serializer = CartSerializer(items, many = True)
+  return Response({
+    "cart_items": serializer.data,
+    "total_amount": net_amount
+  })
+

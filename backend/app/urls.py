@@ -10,5 +10,7 @@ urlpatterns=[
   path('add-to-cart/',views.AddToCart, name = "add-to-cart"),
   path('show-cart/',views.ShowCart, name = "show-cart"),
   path('plus-cart/',views.PlusCart, name = "plus-cart"),
+  path('minus-cart/',views.MinusCart, name = "minus-cart"),
+
 
 ]
