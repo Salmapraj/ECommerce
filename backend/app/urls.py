@@ -11,6 +11,6 @@ urlpatterns=[
   path('show-cart/',views.ShowCart, name = "show-cart"),
   path('plus-cart/',views.PlusCart, name = "plus-cart"),
   path('minus-cart/',views.MinusCart, name = "minus-cart"),
-
+  path('remove-cart/',views.RemoveCart, name = "remove-cart"),
 
 ]
