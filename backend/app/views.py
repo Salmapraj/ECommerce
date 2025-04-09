@@ -14,7 +14,7 @@ from rest_framework.authtoken.models import Token
 class RegisterView(generics.CreateAPIView):
   queryset = User.objects.all()
   permission_classes = [AllowAny]
-  serializer = RegisterSerializer
+  serializer_class = RegisterSerializer
 
   def perform_create(self, serializer):
     user = serializer.save()

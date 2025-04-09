@@ -91,10 +91,10 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'ecommerce',
-        'USER': 'postgres',
-        'PASSWORD': 'stha9989',
-        'HOST': 'localhost',  # Change to remote DB host if needed
+        'NAME': 'postgres',
+        'USER': 'postgres.umxbhshsupgsiqvnzduy',
+        'PASSWORD': 'muSical833201eve',
+        'HOST': 'aws-0-us-east-2.pooler.supabase.com',  # Change to remote DB host if needed
         'PORT': '5432',       # Default PostgreSQL port
     }
 }
