@@ -10,7 +10,7 @@ function Footer() {
     //   </div>
     // </div>
     //  
-    <footer className="bg-[#a3e635] bottom-0 left-0 w-full z-50 font-[lato]">
+    <footer className="bg-[#d3f8fc] bottom-0 left-0 w-full z-50 font-[lato]">
             <div className="mx-auto w-full max-w-screen-xl p-3 py-4 ">
                 <div className="flex justify-between items-center">
 
@@ -27,7 +27,7 @@ function Footer() {
   <div>
     <h2 className='font-semibold mb-2' >Products</h2>
     <ul className='text-[14px]'>
-      <li className='mb-[8px]' hover:underline>Toner</li>
+      <li className='mb-[8px]' >Toner</li>
       <li className='mb-[8px]'>Moisturizer</li>
       <li className='mb-[8px]'>Sunscreen</li>
       <li className='mb-[8px]'>Lips</li>

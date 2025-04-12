@@ -1,10 +1,13 @@
 import React from "react";
 import { Link, NavLink } from "react-router-dom";
-import glazep from "../../assets/glazep.png";
-import search from "../../assets/search.png";
-import cart from "../../assets/cart.png";
-import pp from "../../assets/pp.png";
 import { useState, useEffect } from "react";
+import glazep from "./images/glazep.png";
+import search from "./images/search.png";
+import cart from "./images/cart.png";
+import pp from "./images/pp.png";
+
+
+
 function Header() {
 	const [isHeaderVisible, setIsHeaderVisible] = useState(true);
 
@@ -34,7 +37,7 @@ function Header() {
 	return (
 		
  <header
-      className={`bg-[#abe54e]  sticky top-0 z-50 transition-transform duration-300 ${
+      className={`bg-[#dbf5f8]  sticky top-0 z-50 transition-transform duration-300 ${
         isHeaderVisible ? 'translate-y-0' : '-translate-y-full'
       }`}>
 			<nav className="flex justify-between align-center  pt-5 flex-wrap ">
@@ -44,11 +47,8 @@ function Header() {
 				</Link>
 
 				<div className="flex flex-grow justify-center gap-8 font-medium font-[Lato] text-[18px]">
-				<Link to="/">
-						<div>Home</div>
-									
-									</Link>
-
+				
+<div>Home</div>
 						<div>Shop</div>
 						<div>About</div>
 						<div>Contact</div>
