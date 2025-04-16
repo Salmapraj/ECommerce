@@ -1,5 +1,5 @@
 import React from 'react'
-import glazep from "../../assets/glazep.png";
+import glazep from "./images/glazep.png";
 import { Link } from 'react-router-dom'
 function Footer() {
   return (
