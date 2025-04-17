@@ -14,7 +14,7 @@ function Navbar() {
 	};
 
 	return (
-		<div className="flex justify-between items-center px-8 -mt-4 pt-4 pb-0 bg-[#e5f5f7] relative">
+		<div className="flex justify-between items-center px-12 -mt-4 pt-4 pb-0 relative bg-[#e5f1f4]">
 			<img src={glazep} alt="logo" className="w-26 -mt-4" />
 
 			{/* Desktop Navigation */}

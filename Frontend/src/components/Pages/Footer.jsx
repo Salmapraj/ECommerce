@@ -10,7 +10,7 @@ function Footer() {
     //   </div>
     // </div>
     //  
-    <footer className="bg-[#d3f8fc] bottom-0 left-0 w-full z-50 font-[lato]">
+    <footer className="bg-[#e5f1f4] bottom-0 left-0 w-full z-50 font-[lato] mt-0">
             <div className="mx-auto w-full max-w-screen-xl p-3 py-4 ">
                 <div className="flex justify-between items-center">
 
@@ -54,7 +54,7 @@ function Footer() {
                     
                         </div>
                         </div>
-                        <hr className="my-6 border-gray-400 " />
+                        <hr className="my-6 border-gray-300 " />
                         <div className="sm:flex sm:items-center sm:justify-between">
                     <span className="text-sm text-gray-500 sm:text-center">
                         © 2023
