@@ -2,7 +2,7 @@ import React, { useContext } from 'react'
 import { ShopContext } from '../Context/ShopContext'
 import { Link } from 'react-router-dom'
 
-function ProductItem({id, img, name, price}) {
+function ProductItem({id, img, name, price,category}) {
     const { currency } = useContext(ShopContext); // Corrected to destructure just the currency
     
     return (
@@ -16,7 +16,8 @@ function ProductItem({id, img, name, price}) {
   className='hover:scale-110 transition ease-in-out'
 />      </div>
       <p className='pt-3 pb-1 text-sm'>{name}</p>
-      <p className='text-sm font-medium'>{currency} {price}</p>
+      <p className='capitalize text-sm font-medium'>{category}</p>
+      <p className='text-sm font-medium '>{currency} {price}</p>
       </Link>
       </>
     )

@@ -7,7 +7,7 @@ import ProductItem from './ProductItem'
 function LatestCollection() {
   const { products } = useContext(ShopContext)
   
-  console.log(products)  // Note: changed from Products to products to match the context value
+  // Note: changed from Products to products to match the context value
 
 const [latestProducts, setLatestProducts] = useState([])
 useEffect(()=>{
@@ -37,6 +37,7 @@ latestProducts.map((product, index) => (
         img={product.img} 
         name={product.name} 
         price={product.price}
+        category ={product.category}
     />
 ))
                 
