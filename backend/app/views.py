@@ -9,6 +9,8 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.authtoken.models import Token
+from .esewa_utils import *
+import uuid
 
 # Create your views here.
 class RegisterView(generics.CreateAPIView):
@@ -185,6 +187,64 @@ def RemoveCart(request):
   })
 
   
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def checkout(request):
+  user = request.user;
+  location = request.data.get("location")
+  payment_method = request.data.get("payment_method")
 
-  
+  cart_items = Cart.objects.filter(user = user)
+  if not cart_items.exists():
+    return Response({'error': 'Cart is empty'}, status = status.HTTP_400_BAD_REQUEST)
+  total_amount = sum(item.product.price * item.quantity for item in cart_items)
 
+  order_id = f"ORD - {uuid.uuid4().hex[:8]}"
+
+  order = Order.objects.create(
+    user = user,
+    order_id = order_id,
+    amount = total_amount,
+    location = location,
+    payment_method = payment_method,
+    payment_status = 'PENDING'
+  )
+
+  if payment_method == "COD":
+    order.payment_status = 'ACCEPTED'
+    order.save()
+    cart_items.delete()
+
+    return Response({
+      'status': 'success',
+      'message': 'Order placed successfully. Payment will be collected on delivery',
+      'order_id': order_id
+    })
+  elif payment_method == "ESEWA":
+    payment_data = generate_esewa_payment_data(amount = total_amount, order_id=order_id)
+    return Response({'payment_gateway':'esewa',
+      'payment_url': settings.ESEWA_API_URL,
+      'payment_data': payment_data,
+      'method': 'POST'})
+  else:
+    return Response(
+            {'error': 'Invalid payment method'},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+
+def esewa_success(request):
+  ref_id = request.GET.get('refId')
+  order_id = request.GET.get('oid')
+  return Response({
+    "value": "Success"
+  })
+
+def failure(request):
+  return Response({
+    "value": "Failure"
+  })
+
+
+def esewa_test_view(request):
+    return render(request, 'app/esewa/test.html')

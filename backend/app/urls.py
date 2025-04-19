@@ -12,5 +12,9 @@ urlpatterns=[
   path('plus-cart/',views.PlusCart, name = "plus-cart"),
   path('minus-cart/',views.MinusCart, name = "minus-cart"),
   path('remove-cart/',views.RemoveCart, name = "remove-cart"),
+  path('checkout/',views.checkout,name="checkout"),
+  # path('esewa/success',views.esewa_success, name="esewa_success"),
+  # path('esewa/failure',views.esewa_failure, name="esewa_failure"),
+  
 
 ]

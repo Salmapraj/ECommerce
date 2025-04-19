@@ -69,7 +69,7 @@ ROOT_URLCONF = 'backend.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -168,6 +168,15 @@ SIMPLE_JWT = {
 }
 
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:8080",
+    "http://localhost:5173",
     "http://127.0.0.1:8000",
 ]
+
+
+CORS_ALLOW_CREDENTIALS = True
+
+ESEWA_MERCHANT_ID = 'EPAYTEST'
+ESEWA_API_URL = 'https://rc-epay.esewa.com.np/api/epay/main/v2/form'
+ESEWA_VERIFY_URL = 'https://rc.esewa.com.np/api/epay/transaction/status/'
+ESEWA_SUCCESS_URL = 'http://127.0.0.1:8000/esewa/success'
+ESEWA_FAILURE_URL = 'http://127.0.0.1:8000/esewa/failure'
