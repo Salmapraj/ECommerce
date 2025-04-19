@@ -37,16 +37,9 @@ class RegisterSerializer(serializers.ModelSerializer):
     return user
   
 class ProductSerializer(serializers.ModelSerializer):
-  img = serializers.SerializerMethodField()
   class Meta:
     model = Product
     fields = '__all__'
-
-  def get_img(self, obj):
-        request = self.context.get('request')
-        if obj.img and hasattr(obj.img, 'url'):
-            return request.build_absolute_uri(obj.img.url)
-        return None
   
   def __str__(self):
       return self.name
