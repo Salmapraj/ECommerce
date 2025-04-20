@@ -40,8 +40,8 @@ class ProductSerializer(serializers.ModelSerializer):
   class Meta:
     model = Product
     fields = '__all__'
-
-    def __str__(self):
+  
+  def __str__(self):
       return self.name
     
 class MyTokenPairSerializer(TokenObtainPairSerializer):
