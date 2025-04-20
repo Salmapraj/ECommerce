@@ -21,7 +21,7 @@ class Product(models.Model):
   description = models.TextField()
   brand = models.CharField()
   ingredients = models.TextField()
-  img = models.ImageField(upload_to='images')
+  img = models.ImageField(upload_to='images/')
 
 
 class User(AbstractUser):
@@ -41,3 +41,21 @@ class Cart(models.Model):
   user = models.ForeignKey(User, on_delete=models.CASCADE)
   product = models.ForeignKey(Product, on_delete = models.CASCADE)
   quantity = models.PositiveIntegerField(default = 1)
+
+class Order(models.Model):
+  PAYMENT_CHOICES = [
+    ('COD', 'Cash on Delivery'),
+    ('ESEWA', 'eSewa'),
+    ('FONEPAY','Fonepay'),
+  ]
+  user = models.ForeignKey(User, on_delete= models.CASCADE)
+  order_id = models.CharField(max_length = 100, unique = True)
+  amount = models.DecimalField(max_digits = 10, decimal_places = 2)
+  location = models.TextField()
+  payment_method = models.CharField(max_length=10, choices = PAYMENT_CHOICES)
+  payment_status = models.CharField(max_length= 20,default ='PENDING')
+  transaction_id = models.CharField(max_length = 100, blank = True, null = True)
+  created_at = models.DateTimeField(auto_now_add =True)
+
+  def __str__(self):
+    return f"Order {self.order_id} - {self.user.username}"
