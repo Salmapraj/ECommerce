@@ -9,27 +9,7 @@ import pp from "./images/pp.png";
 function Header() {
 	const [isHeaderVisible, setIsHeaderVisible] = useState(true);
 
-	useEffect(() => {
-		const handleScroll = () => {
-			// Set a threshold for when the header should disappear
-			const threshold = 100; // Adjust this value as needed
-			const currentScrollPos = window.pageYOffset;
-
-			if (currentScrollPos > threshold) {
-				setIsHeaderVisible(false); // Hide the header
-			} else {
-				setIsHeaderVisible(true); // Show the header
-			}
-		};
-
-		// Add scroll event listener
-		window.addEventListener("scroll", handleScroll);
-
-		// Clean up the event listener on component unmount
-		return () => {
-			window.removeEventListener("scroll", handleScroll);
-		};
-	}, []);
+	
 
 	return (
 		//  <header

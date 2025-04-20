@@ -6,20 +6,26 @@ import menu from "/public/images/menu.png";
 import searchh from "/public/images/searchh.png";
 import { Link, NavLink } from "react-router-dom";
 import { ShopContext } from "../Context/ShopContext";
-// import Login from "./Login"
+import Login from "./Login"
 
 function Navbar() {
 	const [isMenuOpen, setIsMenuOpen] = useState(false);
+	const [isHeaderVisible, setIsHeaderVisible] = useState(true);
 
-	const {setShowSearch} = useContext(ShopContext)
+	const {setShowSearch, getCartCount} = useContext(ShopContext)
 	const toggleMenu = () => {
 		setIsMenuOpen(!isMenuOpen);
 	};
 
+	
 	return (
-		<div className="flex justify-between items-center px-12 -mt-4 pt-4 pb-0 relative bg-[#e5f1f4]">
+		<header
+		      className={`bg-[#dbf5f8]  sticky top-0 z-50 transition-transform duration-300 ${
+		        isHeaderVisible ? 'translate-y-0' : '-translate-y-full'
+		      }`}>
+		<div className="flex justify-between items-center px-12 -mt-4 pt-10 pb-5 relative bg-[#e5f1f4]">
 		<Link to="/">
-			<img src={glazep} alt="logo" className="w-26 -mt-4" />
+			<img src={glazep} alt="logo" className="w-28 -mt-4" />
 		</Link>
 
 			{/* Desktop Navigation */}
@@ -66,7 +72,7 @@ function Navbar() {
 					<img
 						src={profile}
 						alt="profile-icon"
-						className="w-[25px] -mt-3 cursor-pointer"
+						className="w-[28px] -mt-3 cursor-pointer"
 						/>
 						</Link>
 					{/* Dropdown menu (initially hidden, appears on group hover) */}
@@ -82,11 +88,11 @@ function Navbar() {
 					<img
 						src={cart}
 						alt="cart"
-						className="w-7 min-w-5 -mt-3 cursor-pointer"
+						className="w-8 min-w-5 -mt-3 cursor-pointer"
 					/>
-					<p className="absolute right-[2px] bottom-[-5px] w-4 text-center leading-4 bg-black text-white aspect-square rounded-full text-[8px]">
-						10
-					</p>
+<p className="absolute right-[2px] bottom-[-5px] w-4 text-center leading-4 bg-black text-white aspect-square rounded-full text-[8px]">
+  {getCartCount()}
+</p>
 				</Link>
 
 				{/* Mobile Menu Toggle Button */}
@@ -131,7 +137,9 @@ function Navbar() {
 				</div>
 			)}
 		</div>
+		</header>
 	);
+
 }
 
 export default Navbar;
