@@ -47,7 +47,8 @@ INSTALLED_APPS = [
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+        # 'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
     # 'DEFAULT_RENDERER_CLASSES':('rest_framework.renderers.JSONRenderer',),
     
@@ -175,6 +176,12 @@ CORS_ALLOWED_ORIGINS = [
 
 
 CORS_ALLOW_CREDENTIALS = True
+CSRF_COOKIE_HTTPONLY = False
+SESSION_COOKIE_SECURE = False     # True for HTTPS, False for local dev
+CSRF_COOKIE_SECURE = False
+SESSION_COOKIE_SAMESITE = 'Lax'  # or 'None' if cross-site
+CSRF_COOKIE_SAMESITE = 'Lax'
+
 
 ESEWA_MERCHANT_ID = 'EPAYTEST'
 ESEWA_API_URL = 'https://rc-epay.esewa.com.np/api/epay/main/v2/form'

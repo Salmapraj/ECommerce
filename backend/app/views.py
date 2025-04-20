@@ -10,6 +10,9 @@ from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.authtoken.models import Token
 from .esewa_utils import *
+from django.contrib.auth import login as django_login,logout
+from django.http import JsonResponse
+from django.views.decorators.csrf import ensure_csrf_cookie, csrf_exempt
 import uuid
 
 # Create your views here.
@@ -21,29 +24,45 @@ class RegisterView(generics.CreateAPIView):
   def perform_create(self, serializer):
     user = serializer.save()
 
+# @api_view(['POST'])
+# @permission_classes([AllowAny])
+# def login(request):
+#   serializer = LoginSerializer(data = request.data)
+#   if serializer.is_valid():
+#     user = serializer.validated_data['user']
+#     refresh = RefreshToken.for_user(user)
+#     access_token = refresh.access_token
+#     access_token['username'] = user.username
+#     access_token['phone']  = user.phone
+#     return Response({
+#       'refresh' : str(refresh),
+#       'access': str(access_token),
+#       'user': {
+#         'username': user.username,
+#         'phone': user.phone
+#       }
+#     }, status = status.HTTP_200_OK)
+#   else:
+#     return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST)
+
+
+
 @api_view(['POST'])
 @permission_classes([AllowAny])
-def login(request):
-  serializer = LoginSerializer(data = request.data)
-  if serializer.is_valid():
-    user = serializer.validated_data['user']
-    refresh = RefreshToken.for_user(user)
-    access_token = refresh.access_token
-    access_token['username'] = user.username
-    access_token['phone']  = user.phone
-    return Response({
-      'refresh' : str(refresh),
-      'access': str(access_token),
-      'user': {
-        'username': user.username,
-        'phone': user.phone
-      }
-    }, status = status.HTTP_200_OK)
-  else:
-    return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST)
-
-
-
+def login_view(request):  # renamed to avoid conflict with login
+    serializer = LoginSerializer(data=request.data, context={'request': request})
+    if serializer.is_valid():
+        user = serializer.validated_data['user']
+        django_login(request, user)  # use _request to get the original Django request object
+        return Response({
+                "message": "Login successful",
+                "user": {
+                    "username": user.username,
+                    "voted": user.phone
+                }
+        })
+      
+    return Response(serializer.errors, status=400) 
 
 @api_view(['GET'])
 def GetProducts(request):
@@ -109,18 +128,28 @@ def ShowCart(request):
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
-def LogoutView(request):
-    try:
-        refresh_token = request.data.get("refresh")
-        if not refresh_token:
-            return Response({"error": "Refresh token is required"}, status=status.HTTP_400_BAD_REQUEST)
+def session_logout(request):
+    logout(request)
+    return Response({"message": "Logout successful"})
 
-        token = RefreshToken(refresh_token)
-        token.blacklist()
+@ensure_csrf_cookie
+def get_csrf_token(request):
+    return JsonResponse({"message": "CSRF cookie set"})
 
-        return Response({"message": "Successfully logged out"}, status=status.HTTP_200_OK)
-    except Exception as e:
-        return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+# @api_view(['POST'])
+# @permission_classes([IsAuthenticated])
+# def LogoutView(request):
+#     try:
+#         refresh_token = request.data.get("refresh")
+#         if not refresh_token:
+#             return Response({"error": "Refresh token is required"}, status=status.HTTP_400_BAD_REQUEST)
+
+#         token = RefreshToken(refresh_token)
+#         token.blacklist()
+
+#         return Response({"message": "Successfully logged out"}, status=status.HTTP_200_OK)
+#     except Exception as e:
+#         return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 
 
