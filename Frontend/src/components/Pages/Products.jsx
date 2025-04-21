@@ -17,6 +17,7 @@ function Products() {
             addToCart(productData.id, selectedQuantity);
             // setSelectedQuantity(1); // Reset quantity after adding
         }
+
     };
 
     useEffect(() => {

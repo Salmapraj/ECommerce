@@ -13,7 +13,7 @@ function Cart() {
 		cartItems,
 		getTotalCartAmount,
 		addToCart,
-		removeFromCart,
+		removeFromCart,delivery_fee
 	} = useContext(ShopContext);
 	const [cartData, setCartData] = useState([]);
 	const shippingFee = 10;
@@ -106,17 +106,17 @@ function Cart() {
 							</div>
 							<div className="flex justify-between">
 								<span>Shipping Fee</span>
-								<span>{currency} {shippingFee.toFixed(2)}</span>
+								<span>{currency} {delivery_fee.toFixed(2)}</span>
 							</div>
 							<div className="flex justify-between font-bold text-lg pt-3 border-t border-gray-200">
 								<span>Total</span>
-								<span>{currency} {(getTotalCartAmount() + shippingFee).toFixed(2)}</span>
+								<span>{currency} {(getTotalCartAmount() + delivery_fee).toFixed(2)}</span>
 							</div>
 						</div>
 
 						<Link to="/paymentGateway" state={{
 							cartItems: cartData,
-							total: (getTotalCartAmount() + shippingFee).toFixed(2),
+							total: (getTotalCartAmount() + delivery_fee).toFixed(2),
 							currency
 						}}>
 							<button onClick={()=>navigate("/paymentGateway",{state:{getTotalCartAmount:getTotalCartAmount}})} 
