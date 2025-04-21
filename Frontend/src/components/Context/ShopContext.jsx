@@ -1,5 +1,6 @@
 
-import React, { createContext, useState, useEffect, useMemo } from "react";
+
+import React, { createContext, useState, useEffect, useMemo, useCallback } from "react";
 
 export const ShopContext = createContext();
 
@@ -16,118 +17,213 @@ function ShopContextProvider(props) {
   const delivery_fee = 100;
   const [searchQuery, setSearchQuery] = useState("");
   const [showSearch, setShowSearch] = useState(false);
+  const [user, setUser] = useState(null);
 
-  const addToCart = async (itemId, quantity = 1) => {
+  // Store pending cart operations to handle network issues
+  const [pendingOperations, setPendingOperations] = useState([]);
+
+  // Memoized API base URL7
+  const apiBaseUrl = useMemo(() => 'http://localhost:8000', []);
+  const logout = async () => {
     try {
-      // First update local state for immediate UI feedback
-      setCartItems((prevCart) => {
-        const itemIdStr = String(itemId);
-        return {
-          ...prevCart,
-          [itemIdStr]: (prevCart[itemIdStr] || 0) + quantity,
-        };
-      });
-      
-      const token = localStorage.getItem('token');
-      if (!token) {
-        // If no token, just keep the local cart (guest mode)
-        return;
-      }
-      
-      // Then sync with backend
-      const response = await fetch('http://localhost:8000/add-to-cart/', {
-        method: 'POST',
+      await axios.post('http://localhost:8000/api/session_logout/', {}, {
+        withCredentials: true,
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({
-          product_id: itemId,
-          quantity: quantity
-        })
+          'Authorization': `Token ${localStorage.getItem('token')}`,
+        }
       });
       
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to sync with server');
-      }
-      
-      // Optionally fetch the updated cart to ensure consistency
-      await fetchCartFromBackend();
-      
+      localStorage.removeItem('token');
+      setUser(null);
+      setCartItems({}); // Clear cart on logout
     } catch (error) {
-      console.error('Error syncing cart with server:', error);
-      setCartError('Failed to add item to cart. Please try again.');
-      
-      // Revert local state if server sync fails
-      fetchCartFromBackend();
+      console.error('Logout error:', error);
     }
   };
+  // Unified API request handler
+  const makeApiRequest = useCallback(async (endpoint, method = 'GET', body = null) => {
+    const token = localStorage.getItem('token');
+    const headers = {
+      'Content-Type': 'application/json',
+    };
+    
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+    
+    const response = await fetch(`${apiBaseUrl}${endpoint}`, {
+      method,
+      headers,
+      body: body ? JSON.stringify(body) : null,
+    });
+    
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.error || 'Request failed');
+    }
+    
+    return response.json();
+  }, [apiBaseUrl]);
 
-  const removeFromCart = async (itemId, quantity = 1) => {
-    const itemIdStr = String(itemId);
-    const currentQty = cartItems[itemIdStr] || 0;
+  // Process pending cart operations
+  const processPendingOperations = useCallback(async () => {
+    if (pendingOperations.length === 0) return;
     
     try {
-      // Update local state first for immediate feedback
-      setCartItems((prevCart) => {
-        const newQty = Math.max(0, currentQty - quantity);
-        
-        if (newQty <= 0) {
-          const { [itemIdStr]: _, ...rest } = prevCart;
-          return rest;
-        }
-        
-        return {
-          ...prevCart,
-          [itemIdStr]: newQty,
-        };
-      });
+      const operations = [...pendingOperations];
+      setPendingOperations([]);
       
+      for (const op of operations) {
+        try {
+          await makeApiRequest(op.endpoint, op.method, op.body);
+        } catch (error) {
+          console.error('Failed to sync operation:', op, error);
+          // Requeue failed operations
+          setPendingOperations(prev => [...prev, op]);
+        }
+      }
+      
+      // In your ShopContext.js
+
+
+
+
+      // Refresh cart after processing pending operations
+      await fetchCartFromBackend();
+    } catch (error) {
+      console.error('Error processing pending operations:', error);
+    }
+  }, [pendingOperations, makeApiRequest]);
+
+  // Optimized cart update function
+  const updateLocalCart = useCallback((itemId, quantity) => {
+    const itemIdStr = String(itemId);
+    
+    setCartItems(prevCart => {
+      if (quantity <= 0) {
+        const { [itemIdStr]: _, ...rest } = prevCart;
+        return rest;
+      }
+      
+      return {
+        ...prevCart,
+        [itemIdStr]: quantity,
+      };
+    });
+  }, []);
+
+  const addToCart = useCallback(async (itemId, quantity = 1) => {
+    const itemIdStr = String(itemId);
+    const currentQty = cartItems[itemIdStr] || 0;
+    const newQty = currentQty + quantity;
+    
+    // Optimistic UI update
+    updateLocalCart(itemId, newQty);
+    
+    try {
       const token = localStorage.getItem('token');
       if (!token) {
-        // If no token, just keep the local cart (guest mode)
+        // Queue operation for when user logs in
+        setPendingOperations(prev => [...prev, {
+          endpoint: '/add-to-cart/',
+          method: 'POST',
+          body: { product_id: itemId, quantity }
+        }]);
         return;
       }
       
-      // Then sync with backend
-      const endpoint = quantity >= currentQty ? 
-        'http://localhost:8000/remove-cart/' : 
-        'http://localhost:8000/minus-cart/';
-        
-      const response = await fetch(endpoint, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({
-          product_id: itemId
-        })
+      await makeApiRequest('/add-to-cart/', 'POST', {
+        product_id: itemId,
+        quantity: quantity
       });
       
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to sync with server');
+    } catch (error) {
+      console.error('Error adding to cart:', error);
+      setCartError(error.message);
+      
+      // Revert local state and queue operation for retry
+      updateLocalCart(itemId, currentQty);
+      setPendingOperations(prev => [...prev, {
+        endpoint: '/add-to-cart/',
+        method: 'POST',
+        body: { product_id: itemId, quantity }
+      }]);
+    }
+  }, [cartItems, makeApiRequest, updateLocalCart]);
+
+  const removeFromCart = useCallback(async (itemId, quantity = 1) => {
+    const itemIdStr = String(itemId);
+    const currentQty = cartItems[itemIdStr] || 0;
+    const newQty = Math.max(0, currentQty - quantity);
+    
+    // Optimistic UI update
+    updateLocalCart(itemId, newQty);
+    
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        // Queue operation for when user logs in
+        const endpoint = quantity >= currentQty ? '/remove-cart/' : '/minus-cart/';
+        setPendingOperations(prev => [...prev, {
+          endpoint,
+          method: 'POST',
+          body: { product_id: itemId }
+        }]);
+        return;
       }
       
-      // Optionally fetch the updated cart to ensure consistency
-      await fetchCartFromBackend();
+      const endpoint = quantity >= currentQty ? '/remove-cart/' : '/minus-cart/';
+      await makeApiRequest(endpoint, 'POST', { product_id: itemId });
       
     } catch (error) {
-      console.error('Error syncing cart with server:', error);
-      setCartError('Failed to update cart. Please try again.');
+      console.error('Error removing from cart:', error);
+      setCartError(error.message);
       
-      // Revert local state if server sync fails
-      fetchCartFromBackend();
+      // Revert local state and queue operation for retry
+      updateLocalCart(itemId, currentQty);
+      const endpoint = quantity >= currentQty ? '/remove-cart/' : '/minus-cart/';
+      setPendingOperations(prev => [...prev, {
+        endpoint,
+        method: 'POST',
+        body: { product_id: itemId }
+      }]);
     }
-  };
+  }, [cartItems, makeApiRequest, updateLocalCart]);
 
-  const getCartCount = () => {
+  const clearCart = useCallback(async () => {
+    // Optimistic UI update
+    setCartItems({});
+    
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        // Queue operation for when user logs in
+        setPendingOperations(prev => [...prev, {
+          endpoint: '/clear-cart/',
+          method: 'POST'
+        }]);
+        return;
+      }
+      
+      await makeApiRequest('/clear-cart/', 'POST');
+    } catch (error) {
+      console.error('Error clearing cart:', error);
+      setCartError(error.message);
+      
+      // Revert local state and queue operation for retry
+      await fetchCartFromBackend();
+      setPendingOperations(prev => [...prev, {
+        endpoint: '/clear-cart/',
+        method: 'POST'
+      }]);
+    }
+  }, [makeApiRequest]);
+
+  const getCartCount = useCallback(() => {
     return Object.values(cartItems).reduce((total, quantity) => total + quantity, 0);
-  };
+  }, [cartItems]);
 
-  const getTotalCartAmount = () => {
+  const getTotalCartAmount = useCallback(() => {
     let total = 0;
     for (const itemId in cartItems) {
       const item = state.products.find(product => String(product.id) === itemId);
@@ -136,9 +232,9 @@ function ShopContextProvider(props) {
       }
     }
     return total;
-  };
+  }, [cartItems, state.products]);
   
-  const fetchCartFromBackend = async () => {
+  const fetchCartFromBackend = useCallback(async () => {
     setCartLoading(true);
     setCartError(null);
     
@@ -149,23 +245,7 @@ function ShopContextProvider(props) {
         return;
       }
       
-      const response = await fetch('http://localhost:8000/show-cart/', {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
-      
-      if (!response.ok) {
-        if (response.status === 401) {
-          // Token expired or invalid
-          localStorage.removeItem('token');
-          setCartItems({});
-          throw new Error('Your session has expired. Please log in again.');
-        }
-        throw new Error('Failed to fetch cart');
-      }
-      
-      const data = await response.json();
+      const data = await makeApiRequest('/show-cart/');
       
       // Convert backend cart format to frontend format
       const cartState = {};
@@ -177,65 +257,67 @@ function ShopContextProvider(props) {
     } catch (error) {
       console.error('Error fetching cart:', error);
       setCartError(error.message);
+      
+      if (error.message.includes('session') || error.message.includes('token')) {
+        localStorage.removeItem('token');
+      }
     } finally {
       setCartLoading(false);
     }
-  };
+  }, [makeApiRequest]);
 
-  // Fetch products
-  useEffect(() => {
+  const fetchProducts = useCallback(async () => {
     const controller = new AbortController();
-    const { signal } = controller;
+    
+    try {
+      const response = await fetch(`${apiBaseUrl}/products/`, {
+        signal: controller.signal,
+      });
 
-    const fetchProducts = async () => {
-      try {
-        const response = await fetch("http://localhost:8000/products/", {
-          signal,
-        });
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
 
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
+      const data = await response.json();
 
-        const data = await response.json();
-
-        setState({
-          products: data,
+      setState({
+        products: data,
+        loading: false,
+        error: null,
+      });
+    } catch (err) {
+      if (err.name !== "AbortError") {
+        setState(prev => ({
+          ...prev,
           loading: false,
-          error: null,
-        });
-      } catch (err) {
-        if (err.name === "AbortError") {
-          console.log("Fetch aborted");
-        } else {
-          setState((prev) => ({
-            ...prev,
-            loading: false,
-            error: err.message,
-          }));
-        }
+          error: err.message,
+        }));
+      }
+    }
+    
+    return () => controller.abort();
+  }, [apiBaseUrl]);
+
+  // Initial data loading
+  useEffect(() => {
+    fetchProducts();
+  }, [fetchProducts]);
+
+  // Cart synchronization
+  useEffect(() => {
+    const handleCartSync = async () => {
+      const token = localStorage.getItem('token');
+      if (token) {
+        await fetchCartFromBackend();
+        await processPendingOperations();
       }
     };
-
-    fetchProducts();
-
-    return () => controller.abort();
-  }, []);
-
-  // Load cart on initial mount or when token changes
-  useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      fetchCartFromBackend();
-    }
+    
+    handleCartSync();
     
     const handleStorageChange = (e) => {
       if (e.key === 'token') {
-        if (e.newValue) {
-          fetchCartFromBackend();
-        } else {
-          setCartItems({});
-        }
+        handleCartSync();
       }
     };
     
@@ -244,20 +326,18 @@ function ShopContextProvider(props) {
     return () => {
       window.removeEventListener('storage', handleStorageChange);
     };
-  }, []);
+  }, [fetchCartFromBackend, processPendingOperations]);
 
   // Memoized filtered products based on search query
   const filteredProducts = useMemo(() => {
     if (!searchQuery) return state.products;
 
+    const searchLower = searchQuery.toLowerCase();
     return state.products.filter((product) => {
-      const searchLower = searchQuery.toLowerCase();
       return (
         product.name.toLowerCase().includes(searchLower) ||
-        (product.description &&
-          product.description.toLowerCase().includes(searchLower)) ||
-        (product.category &&
-          product.category.toLowerCase().includes(searchLower))
+        (product.description && product.description.toLowerCase().includes(searchLower)) ||
+        (product.category && product.category.toLowerCase().includes(searchLower))
       );
     });
   }, [state.products, searchQuery]);
@@ -273,11 +353,15 @@ function ShopContextProvider(props) {
     setSearchQuery,
     showSearch,
     setShowSearch,
+    user,
+  setUser,
+  logout,
     cartItems,
     cartLoading,
     cartError,
     addToCart,
     removeFromCart,
+    clearCart,
     getCartCount,
     getTotalCartAmount,
     refreshCart: fetchCartFromBackend,

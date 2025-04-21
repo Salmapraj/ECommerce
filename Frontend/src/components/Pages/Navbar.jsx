@@ -6,8 +6,8 @@ import menu from "/public/images/menu.png";
 import searchh from "/public/images/searchh.png";
 import { Link, NavLink } from "react-router-dom";
 import { ShopContext } from "../Context/ShopContext";
-import Login from "./Login"
-
+// import Login from "./Login"
+import Login from "./Login";
 function Navbar() {
 	const [isMenuOpen, setIsMenuOpen] = useState(false);
 	const [isHeaderVisible, setIsHeaderVisible] = useState(true);
@@ -80,7 +80,9 @@ function Navbar() {
 						<div className="flex flex-col gap-2 w-36 py-3 px-5 bg-slate-100 text-gray-500 rounded">
 							<p className="cursor-pointer hover:text-black">My Profile</p>
 							<p className="cursor-pointer hover:text-black">Orders</p>
-							<p className="cursor-pointer hover:text-black">Logout</p>
+							
+							<Link to="/logout" className="hover:text-black">Logout</Link>
+
 						</div>
 					</div>
 				</div>
