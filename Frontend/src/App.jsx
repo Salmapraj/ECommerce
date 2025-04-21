@@ -7,31 +7,29 @@ import Products from "./components/Pages/Products";
 import Cart from "./components/Cart/Cart";
 import Login from "./components/Pages/Login";
 import LogOut from "./components/Pages/LogOut";
-import PlaceOrder from "./components/Pages/PlaceOrder";
 import Orders from "./components/Pages/Orders";
-import Footer from './components/Pages/Footer';
+import Footer from "./components/Pages/Footer";
 import Collection from "./components/Pages/Collection";
 import Register from "./components/Pages/Register";
 import SearchBar from "./components/Pages/SearchBar";
 import Navbar from "./components/Pages/Navbar";
-// import CartPage from "./components/Pages/CartPage";
-
-import { CartProvider } from "./components/Context/CartContext";
+import PaymentGateway from "./components/Payment/PaymentGateway";
+import Success from "./components/Payment/Success";
+import Failure from "./components/Payment/Failure";
 import ShopContextProvider from "./components/Context/ShopContext";
+
+// import { CartProvider } from "./components/Context/CartContext";
 // import Policy from "./components/Pages/Policies";
 // import { CartProvider } from "./components/Cart/Cart";
 // import { AuthProvider } from "./components/Context/AuthContext";
 // import AuthProtected from "./components/AuthProtected";
-// import { ShopContextProvider } from "./components/Context/ShopContext";
 function App() {
 	return (
 		<>
-
 			{/* <AuthProvider> */}
 			<ShopContextProvider>
-
-			<Navbar/>
-			<SearchBar/>
+				<Navbar />
+				<SearchBar />
 				<Routes>
 					<Route path="/" element={<Home />} />
 					<Route path="/collection" element={<Collection />} />
@@ -44,18 +42,19 @@ function App() {
 					<Route path="/login" element={<Login />} />
 					<Route path="/logout" element={<LogOut />} />
 					<Route path="/register" element={<Register />} />
-					<Route path="/place-order" element={<PlaceOrder />} />
 					<Route path="/orders" element={<Orders />} />
+					<Route path="/success" element={<Success/>} />
+					<Route path="/failure" element={<Failure/>} />
+					<Route path="/paymentGateway" element={<PaymentGateway />} />
 				</Routes>
 
 				{/* <Policy/> */}
-		<Footer/>
-		</ShopContextProvider>
+				<Footer />
+			</ShopContextProvider>
 
-				{/* </AuthProvider> */}
+			{/* </AuthProvider> */}
 		</>
 	);
 }
 
 export default App;
-

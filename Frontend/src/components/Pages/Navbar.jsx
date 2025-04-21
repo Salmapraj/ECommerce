@@ -6,8 +6,6 @@ import menu from "/public/images/menu.png";
 import searchh from "/public/images/searchh.png";
 import { Link, NavLink } from "react-router-dom";
 import { ShopContext } from "../Context/ShopContext";
-// import Login from "./Login"
-import Login from "./Login";
 function Navbar() {
 	const [isMenuOpen, setIsMenuOpen] = useState(false);
 	const [isHeaderVisible, setIsHeaderVisible] = useState(true);
@@ -19,10 +17,8 @@ function Navbar() {
 
 	
 	return (
-		<header
-		      className={`bg-[#dbf5f8]  sticky top-0 z-50 transition-transform duration-300 ${
-		        isHeaderVisible ? 'translate-y-0' : '-translate-y-full'
-		      }`}>
+		
+		     
 		<div className="flex justify-between items-center px-12 -mt-4 pt-10 pb-5 relative bg-[#e5f1f4]">
 		<Link to="/">
 			<img src={glazep} alt="logo" className="w-28 -mt-4" />
@@ -139,7 +135,6 @@ function Navbar() {
 				</div>
 			)}
 		</div>
-		</header>
 	);
 
 }
