@@ -141,18 +141,7 @@ useEffect(() => {
 							</div>
 						</div>
 
-						{/* <Link to="/paymentGateway" state={{
-							cartItems: cartData,
-							total: (getTotalCartAmount() + delivery_fee).toFixed(2),
-							currency
-						}}>
-							<button onClick={()=>navigate("/paymentGateway",{state:{getTotalCartAmount:getTotalCartAmount}})} 
-							className="w-full bg-black text-white py-3 mt-6 hover:bg-gray-800 transition-colors">
-								PROCEED TO CHECKOUT
-							</button>
-						</Link> */}
-
-{/* // Simplify your checkout button (remove duplicate state passing) */}
+						
 <button 
   onClick={() => navigate("/paymentGateway", {
     state: {

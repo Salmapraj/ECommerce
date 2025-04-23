@@ -177,11 +177,8 @@ CORS_ALLOWED_ORIGINS = [
 
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:5173"
-    "http://localhost:5174"
 ]
-CORS_ORIGIN_WHITELIST = [
-    'http://localhost:5173',
-]
+
 CORS_ALLOW_CREDENTIALS = True
 CSRF_COOKIE_HTTPONLY = False
 SESSION_COOKIE_SECURE = False     # True for HTTPS, False for local dev
