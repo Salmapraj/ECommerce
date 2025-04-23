@@ -6,37 +6,22 @@ import menu from "/public/images/menu.png";
 import searchh from "/public/images/searchh.png";
 import { Link, NavLink } from "react-router-dom";
 import { ShopContext } from "../Context/ShopContext";
-<<<<<<< HEAD
-// import Login from "./Login"
-
-=======
->>>>>>> demo
 function Navbar() {
 	const [isMenuOpen, setIsMenuOpen] = useState(false);
 	const [isHeaderVisible, setIsHeaderVisible] = useState(true);
 
-<<<<<<< HEAD
-	const {setShowSearch} = useContext(ShopContext)
-=======
 	const {setShowSearch, getCartCount} = useContext(ShopContext)
->>>>>>> demo
 	const toggleMenu = () => {
 		setIsMenuOpen(!isMenuOpen);
 	};
 
 	
 	return (
-<<<<<<< HEAD
-		<div className="flex justify-between items-center px-12 -mt-4 pt-4 pb-0 relative bg-[#e5f1f4]">
-		<Link to="/">
-			<img src={glazep} alt="logo" className="w-26 -mt-4" />
-=======
 		
 		     
 		<div className="flex justify-between items-center px-12 -mt-4 pt-10 pb-5 relative bg-[#e5f1f4]">
 		<Link to="/">
 			<img src={glazep} alt="logo" className="w-28 -mt-4" />
->>>>>>> demo
 		</Link>
 
 			{/* Desktop Navigation */}
@@ -83,11 +68,7 @@ function Navbar() {
 					<img
 						src={profile}
 						alt="profile-icon"
-<<<<<<< HEAD
-						className="w-[25px] -mt-3 cursor-pointer"
-=======
 						className="w-[28px] -mt-3 cursor-pointer"
->>>>>>> demo
 						/>
 						</Link>
 					{/* Dropdown menu (initially hidden, appears on group hover) */}
