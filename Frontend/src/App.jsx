@@ -36,7 +36,7 @@ function App() {
 					{/* <Route path="/cart" element={<CartPage />} /> */}
 
 					<Route path="/login" element={<Login />} />
-					<Route path="/logout" element={<LogOut />} />
+					{/* <Route path="/logout" element={<LogOut />} /> */}
 					<Route path="/register" element={<Register />} />
 					<Route path="/orders" element={<Orders />} />
 					<Route path="/success" element={<Success/>} />
