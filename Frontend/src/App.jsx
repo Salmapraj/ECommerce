@@ -18,11 +18,7 @@ import Success from "./components/Payment/Success";
 import Failure from "./components/Payment/Failure";
 import ShopContextProvider from "./components/Context/ShopContext";
 
-// import { CartProvider } from "./components/Context/CartContext";
-// import Policy from "./components/Pages/Policies";
-// import { CartProvider } from "./components/Cart/Cart";
-// import { AuthProvider } from "./components/Context/AuthContext";
-// import AuthProtected from "./components/AuthProtected";
+
 function App() {
 	return (
 		<>
