@@ -44,6 +44,33 @@ function Cart() {
 		return `http://localhost:8000${imagePath}`;
 	};
 
+	// Add this useEffect to sync with backend when cart changes
+useEffect(() => {
+	const syncCartWithBackend = async () => {
+	  const token = localStorage.getItem('token');
+	  if (!token || cartData.length === 0) return;
+	  
+	  try {
+		await fetch('http://localhost:8000/api/cart/sync/', {
+		  method: 'POST',
+		  headers: {
+			'Content-Type': 'application/json',
+			'Authorization': `Bearer ${token}`
+		  },
+		  body: JSON.stringify({
+			items: cartData.map(item => ({
+			  product_id: item.id,
+			  quantity: item.quantity
+			}))
+		  })
+		});
+	  } catch (error) {
+		console.error('Cart sync failed:', error);
+	  }
+	};
+  
+	syncCartWithBackend();
+  }, [cartData]);
 	return (
 		<div className="border-t pt-14 max-w-6xl mx-auto px-4">
 			<div className="text-2xl mb-8">
@@ -114,7 +141,7 @@ function Cart() {
 							</div>
 						</div>
 
-						<Link to="/paymentGateway" state={{
+						{/* <Link to="/paymentGateway" state={{
 							cartItems: cartData,
 							total: (getTotalCartAmount() + delivery_fee).toFixed(2),
 							currency
@@ -123,7 +150,22 @@ function Cart() {
 							className="w-full bg-black text-white py-3 mt-6 hover:bg-gray-800 transition-colors">
 								PROCEED TO CHECKOUT
 							</button>
-						</Link>
+						</Link> */}
+
+{/* // Simplify your checkout button (remove duplicate state passing) */}
+<button 
+  onClick={() => navigate("/paymentGateway", {
+    state: {
+      cartItems: cartData,
+      total: (getTotalCartAmount() + delivery_fee).toFixed(2),
+      currency,
+      subtotal: getTotalCartAmount()
+    }
+  })}
+  className="w-full bg-black text-white py-3 mt-6 hover:bg-gray-800 transition-colors"
+>
+  PROCEED TO CHECKOUT
+</button>
 					</div>
 				)}
 			</div>

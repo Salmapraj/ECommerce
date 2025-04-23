@@ -1,40 +1,7 @@
-//  import React from 'react'
- 
-//  function Success() {
-//    return (
-//      <div>Sucess</div>
-//    )
-//  }
- 
-//  export default 
-// import React, { useEffect, useState } from "react";
-// import { useSearchParams } from "react-router";
-// const Success = () => {
-//   const [search] = useSearchParams();
-//   const dataQuery = search.get("data");
-//   const [data, setData] = useState({});
-
-//   useEffect(() => {
-//     const resData = atob(dataQuery);
-//     const resObject = JSON.parse(resData);
-//     console.log(resObject);
-
-//     setData(resObject);
-//   }, [search]);
-
-//   return (
-//     <div className="payment-container">
-//       <img src="src/check.png" alt="" />
-//       <p className="price">Rs. {data.total_amount}</p>
-//       <p className="status">Payment Successful</p>
-//     </div>
-//   );
-// };
-
 // export default Success;
 import React, { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom"; // Correct import
-
+import check from "./check.png"
 const Success = () => {
   const [searchParams] = useSearchParams();
   const dataQuery = searchParams.get("data");
@@ -66,10 +33,12 @@ const Success = () => {
   }
 
   return (
-    <div className="payment-container">
-      <img src="src/check.png" alt="" />
-      <p className="price">Rs. {data.total_amount || "0"}</p>
-      <p className="status">Payment Successful</p>
+    <div className="flex justify-center items-center pt-5">
+    <div className="flex flex-col items-center justify-center gap-4 p-8 rounded-xl bg-white shadow-lg max-w-md mx-auto">
+  <img src={check} alt="Success" className="w-20 h-20 text-green-500" />
+  <p className="text-4xl font-bold text-gray-800">Rs. {data.total_amount || "0"}</p>
+  <p className="text-2xl font-semibold text-green-600">Payment Successful</p>
+</div>
     </div>
   );
 };

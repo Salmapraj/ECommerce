@@ -19,6 +19,42 @@ function Products() {
         }
 
     };
+    // const handleAddToCart = async () => {
+    //     if (!productData) return;
+    
+    //     // Local add to cart
+    //     addToCart(productData.id, selectedQuantity);
+    
+    //     // Send to backend
+    //     const token = localStorage.getItem('token'); // or wherever you store JWT
+    //     try {
+    //         const response = await fetch('http://localhost:8000/api/cart/add/', {
+    //             method: 'POST',
+    //             headers: {
+    //                 'Content-Type': 'application/json',
+    //                 'Authorization': `Bearer ${token}`,
+    //             },
+    //             body: JSON.stringify({
+    //                 product_id: productData.id,
+    //                 quantity: selectedQuantity,
+    //             }),
+    //         });
+    
+    //         if (!response.ok) {
+    //             throw new Error('Failed to add to cart');
+    //         }
+    
+    //         const data = await response.json();
+    //         console.log('Item added to cart:', data);
+    
+    //         // Optionally show success message or reset quantity
+    //         // setSelectedQuantity(1);
+    //     } catch (error) {
+    //         console.error('Error adding to cart:', error);
+    //         // Optionally show error to user
+    //     }
+    // };
+    
 
     useEffect(() => {
         if (products && products.length > 0) {
