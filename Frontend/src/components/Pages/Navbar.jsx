@@ -77,7 +77,7 @@ function Navbar() {
 							<p className="cursor-pointer hover:text-black">My Profile</p>
 							<p className="cursor-pointer hover:text-black">Orders</p>
 							
-							<Link to="/logout" className="hover:text-black">Logout</Link>
+							{/* <Link to="/logout" className="hover:text-black">Logout</Link> */}
 
 						</div>
 					</div>
