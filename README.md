@@ -12,10 +12,8 @@ A simple E-Commerce web application built with modern web technologies.
 
 ## Technologies Used
 
-- Frontend: React.js, Redux, Material-UI
-- Backend: Node.js, Express.js
+- Frontend: React.js, Redux,Tailwind css
 - Database: MongoDB
-- Authentication: JWT (JSON Web Tokens)
 
 ## Installation
 
