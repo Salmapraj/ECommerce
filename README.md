@@ -10,10 +10,6 @@ A simple E-Commerce web application built with modern web technologies.
 - Order processing
 - Admin dashboard for product management
 
-## Technologies Used
-
-- Frontend: React.js, Redux,Tailwind css
-- Database: MongoDB
 
 ## Installation
 
