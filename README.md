@@ -8,7 +8,6 @@ A simple E-Commerce web application built with modern web technologies.
 - Product catalog with categories
 - Shopping cart functionality
 - Order processing
-- Admin dashboard for product management
 
 
 ## Installation
