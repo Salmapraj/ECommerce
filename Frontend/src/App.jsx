@@ -6,8 +6,6 @@ import Contact from "./components/Pages/Contact";
 import Products from "./components/Pages/Products";
 import Cart from "./components/Cart/Cart";
 import Login from "./components/Pages/Login";
-import LogOut from "./components/Pages/LogOut";
-import Orders from "./components/Pages/Orders";
 import Footer from "./components/Pages/Footer";
 import Collection from "./components/Pages/Collection";
 import Register from "./components/Pages/Register";
@@ -18,11 +16,7 @@ import Success from "./components/Payment/Success";
 import Failure from "./components/Payment/Failure";
 import ShopContextProvider from "./components/Context/ShopContext";
 
-// import { CartProvider } from "./components/Context/CartContext";
-// import Policy from "./components/Pages/Policies";
-// import { CartProvider } from "./components/Cart/Cart";
-// import { AuthProvider } from "./components/Context/AuthContext";
-// import AuthProtected from "./components/AuthProtected";
+
 function App() {
 	return (
 		<>
@@ -37,12 +31,9 @@ function App() {
 					<Route path="/contact" element={<Contact />} />
 					<Route path="/product/:productId" element={<Products />} />
 					<Route path="/cart" element={<Cart />} />
-					{/* <Route path="/cart" element={<CartPage />} /> */}
 
 					<Route path="/login" element={<Login />} />
-					<Route path="/logout" element={<LogOut />} />
-					<Route path="/register" element={<Register />} />
-					<Route path="/orders" element={<Orders />} />
+\					<Route path="/register" element={<Register />} />
 					<Route path="/success" element={<Success/>} />
 					<Route path="/failure" element={<Failure/>} />
 					<Route path="/paymentGateway" element={<PaymentGateway />} />
