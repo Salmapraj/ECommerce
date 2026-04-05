@@ -18,11 +18,7 @@ import Success from "./components/Payment/Success";
 import Failure from "./components/Payment/Failure";
 import ShopContextProvider from "./components/Context/ShopContext";
 
-// import { CartProvider } from "./components/Context/CartContext";
-// import Policy from "./components/Pages/Policies";
-// import { CartProvider } from "./components/Cart/Cart";
-// import { AuthProvider } from "./components/Context/AuthContext";
-// import AuthProtected from "./components/AuthProtected";
+
 function App() {
 	return (
 		<>
@@ -40,7 +36,7 @@ function App() {
 					{/* <Route path="/cart" element={<CartPage />} /> */}
 
 					<Route path="/login" element={<Login />} />
-					<Route path="/logout" element={<LogOut />} />
+					{/* <Route path="/logout" element={<LogOut />} /> */}
 					<Route path="/register" element={<Register />} />
 					<Route path="/orders" element={<Orders />} />
 					<Route path="/success" element={<Success/>} />
